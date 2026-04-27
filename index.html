@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DX Anime - Unlimited Anime, Anytime</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav id="navbar">
+        <div class="nav-left">
+            <h1 class="logo">DX<span class="highlight">Anime</span></h1>
+            <ul class="nav-links">
+                <li><a href="#" class="active">Home</a></li>
+                <li><a href="#trending">Trending</a></li>
+                <li><a href="#popular">Popular</a></li>
+                <li><a href="#mylist-section">My List</a></li>
+                <li><a href="#" id="nav-request-btn" style="color: var(--accent-color); font-weight: bold;"><i class="fa-solid fa-bullhorn"></i> Request</a></li>
+            </ul>
+        </div>
+        <div class="nav-right" style="display: flex; align-items: center; gap: 1rem;">
+            <!-- Theme Toggle -->
+            <div class="theme-toggle" id="theme-toggle" style="cursor: pointer; font-size: 1.2rem; color: var(--text-color);">
+                <i class="fa-solid fa-moon" id="theme-icon"></i>
+            </div>
+            
+            <!-- Genre Filter -->
+            <select id="genre-filter" class="genre-filter hidden-mobile">
+                <option value="all">Genres</option>
+                <option value="Action">Action</option>
+                <option value="Adventure">Adventure</option>
+                <option value="Comedy">Comedy</option>
+                <option value="Drama">Drama</option>
+                <option value="Fantasy">Fantasy</option>
+                <option value="Horror">Horror</option>
+                <option value="Romance">Romance</option>
+                <option value="Sci-Fi">Sci-Fi</option>
+                <option value="Slice of Life">Slice of Life</option>
+            </select>
+            
+            <div class="search-box">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search anime...">
+                <i class="fa-solid fa-microphone" id="voice-search-btn" style="cursor: pointer; margin-left: 5px; transition: color 0.3s;" title="Voice Search (Say 'Play [Anime]')"></i>
+            </div>
+            <div class="profile-icon">
+                <img src="https://i.pravatar.cc/150?img=11" alt="Profile" style="cursor: pointer;">
+            </div>
+        </div>
+    </nav>
+
+    <!-- Bottom Mobile Nav -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active"><i class="fa-solid fa-house"></i><span>Home</span></a>
+        <a href="#custom-anime-section" class="nav-item"><i class="fa-solid fa-film"></i><span>Anime</span></a>
+        <a href="#" class="nav-item" id="mobile-request-btn"><i class="fa-solid fa-bullhorn" style="color: var(--accent-color);"></i><span style="color: var(--accent-color);">Request</span></a>
+        <a href="#mylist-section" class="nav-item"><i class="fa-solid fa-plus"></i><span>My List</span></a>
+    </nav>
+
+    <!-- Search Results Section (Hidden by default) -->
+    <section id="search-section" class="hidden">
+        <h2 class="section-title">Search Results</h2>
+        <div id="search-results" class="grid-container"></div>
+    </section>
+
+    <!-- Admin Login Section (Hidden by default) -->
+    <section id="admin-login-section" class="hidden">
+        <div class="admin-form-container" style="max-width: 400px; margin-top: 10rem;">
+            <h2 class="section-title" style="text-align: center; margin-bottom: 1.5rem;">Admin Login</h2>
+            <form id="admin-login-form">
+                <div class="form-group input-ico">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" id="admin-username" required autocomplete="username" placeholder="Username">
+                </div>
+                <div class="form-group input-ico">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="admin-password" required autocomplete="current-password" placeholder="Password">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem;">Login</button>
+            </form>
+            <p id="login-error" style="color: var(--accent-color); text-align: center; margin-top: 1rem; display: none;">Invalid credentials!</p>
+        </div>
+    </section>
+
+    <!-- Admin Section (Hidden by default) -->
+    <section id="admin-section" class="hidden">
+        <div class="admin-layout">
+            <!-- Sidebar -->
+            <aside class="admin-sidebar">
+                <div class="admin-logo">DX<span class="highlight">Admin</span></div>
+                <nav class="admin-nav">
+                    <a href="#" class="admin-nav-item active" data-target="admin-overview"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+                    <a href="#" class="admin-nav-item" data-target="admin-add-content"><i class="fa-solid fa-plus-circle"></i> Add/Edit Content</a>
+                    <a href="#" class="admin-nav-item" data-target="admin-manage-content"><i class="fa-solid fa-list"></i> Manage Library</a>
+                    <a href="#" class="admin-nav-item" data-target="admin-requests"><i class="fa-solid fa-envelope"></i> User Requests</a>
+                    <a href="#" class="admin-nav-item" data-target="admin-users"><i class="fa-solid fa-users"></i> Users</a>
+                </nav>
+                <div style="padding: 1.5rem; margin-top: auto;">
+                    <button type="button" id="admin-logout" class="btn btn-secondary" style="width: 100%;"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+                </div>
+            </aside>
+
+            <!-- Main Admin Content -->
+            <main class="admin-main">
+                
+                <!-- Overview View -->
+                <div id="admin-overview" class="admin-view active">
+                    <h2 class="section-title">Overview Analytics</h2>
+                    <div class="admin-stats">
+                        <div class="stat-card">
+                            <div class="circle-graph" id="graph-total" style="--percentage: 0; --circle-color: var(--accent-color);">
+                                <div class="circle-inner" id="stat-total">0</div>
+                            </div>
+                            <h4>Total Content</h4>
+                        </div>
+                        <div class="stat-card">
+                            <div class="circle-graph" id="graph-anime" style="--percentage: 0; --circle-color: #007bff;">
+                                <div class="circle-inner" id="stat-anime">0</div>
+                            </div>
+                            <h4>Anime Series</h4>
+                        </div>
+                        <div class="stat-card">
+                            <div class="circle-graph" id="graph-movies" style="--percentage: 0; --circle-color: #28a745;">
+                                <div class="circle-inner" id="stat-movies">0</div>
+                            </div>
+                            <h4>Movies</h4>
+                        </div>
+                        <div class="stat-card">
+                            <div class="circle-graph" style="--percentage: 100; --circle-color: #ffc107;">
+                                <div class="circle-inner">24</div>
+                            </div>
+                            <h4>Active Users</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add/Edit Content View -->
+                <div id="admin-add-content" class="admin-view hidden">
+                    <h2 class="section-title" id="admin-form-title">Add New Content</h2>
+                    <div class="admin-form-container">
+                        <form id="admin-form">
+                            <input type="hidden" id="admin-item-id">
+                            <div class="form-group">
+                                <label>Title</label>
+                                <input type="text" id="admin-title" required placeholder="Anime/Movie Title">
+                            </div>
+                            <div class="form-group">
+                                <label>Image / Poster URL</label>
+                                <input type="url" id="admin-image" required placeholder="https://example.com/poster.jpg">
+                            </div>
+                            <div style="display: flex; gap: 1rem;">
+                                <div class="form-group" style="flex: 1;">
+                                    <label>Category</label>
+                                    <select id="admin-category" required>
+                                        <option value="custom-anime">Custom Anime</option>
+                                        <option value="movie">Movies</option>
+                                        <option value="indian-toon">Indian Toon</option>
+                                        <option value="old-cartoons">Old Cartoons</option>
+                                        <option value="trending">Trending Now</option>
+                                        <option value="popular">Popular Anime</option>
+                                        <option value="upcoming">Upcoming</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label>Media Source Type</label>
+                                    <select id="admin-media-type" required>
+                                        <option value="direct">Single Direct Video / Movie</option>
+                                        <option value="series">Anime Series (Multi-Episodes)</option>
+                                        <option value="youtube">YouTube Trailer ID</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group" id="admin-video-group">
+                                <label>Video/Trailer URL</label>
+                                <input type="text" id="admin-video" placeholder="https://example.com/video.mp4">
+                            </div>
+                            
+                            <div class="form-group hidden" id="admin-series-group">
+                                <label style="display:flex; justify-content:space-between; align-items:center;">
+                                    <span>Episode Links</span>
+                                    <small style="color: var(--accent-color);">Format: [Season Name] on its own line</small>
+                                </label>
+                                <textarea id="admin-video-links" rows="8" placeholder="[Season 1]&#10;https://example.com/ep1.mp4&#10;https://example.com/ep2.mp4&#10;&#10;[Season 2]&#10;https://example.com/s2e1.mp4"></textarea>
+                            </div>
+                            <div style="display: flex; gap: 1rem;">
+                                <div class="form-group" style="flex: 1;">
+                                    <label>Release Year</label>
+                                    <input type="text" id="admin-year" required placeholder="e.g. 2024">
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label>Score</label>
+                                    <input type="text" id="admin-score" required placeholder="e.g. 8.5">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Genres (comma separated)</label>
+                                <input type="text" id="admin-genres" placeholder="Action, Fantasy, Drama">
+                            </div>
+                            <div class="form-group">
+                                <label>Synopsis</label>
+                                <textarea id="admin-synopsis" rows="4" required></textarea>
+                            </div>
+                            <div style="display: flex; gap: 1rem;">
+                                <button type="submit" class="btn btn-primary" id="admin-submit-btn">Save Content</button>
+                                <button type="button" class="btn btn-secondary" id="admin-cancel-edit-btn" style="display:none;">Cancel Edit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Manage Content View -->
+                <div id="admin-manage-content" class="admin-view hidden">
+                    <h2 class="section-title">Manage Library</h2>
+                    <div class="admin-manage-container">
+                        <div class="form-group" style="margin-bottom: 1rem;">
+                            <label>Filter by Category</label>
+                            <select id="admin-filter-category">
+                                <option value="all">All Categories</option>
+                                <option value="custom-anime">Custom Anime</option>
+                                <option value="movie">Movies</option>
+                                <option value="indian-toon">Indian Toon</option>
+                                <option value="old-cartoons">Old Cartoons</option>
+                                <option value="trending">Trending Now</option>
+                                <option value="popular">Popular Anime</option>
+                                <option value="upcoming">Upcoming</option>
+                            </select>
+                        </div>
+                        <div class="admin-items-list" id="admin-items-list">
+                            <!-- Items populated by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Requests View -->
+                <div id="admin-requests" class="admin-view hidden">
+                    <h2 class="section-title">User Requests</h2>
+                    <div class="admin-table-container">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Content Title</th>
+                                    <th>Type</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-requests-list">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- User Management View -->
+                <div id="admin-users" class="admin-view hidden">
+                    <h2 class="section-title">User Management</h2>
+                    <div class="admin-table-container">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="display:flex; align-items:center; gap:10px;"><img src="https://i.pravatar.cc/150?img=11" width="30" style="border-radius:50%"> DX Admin</td>
+                                    <td>admin@dxanime.com</td>
+                                    <td><span class="badge badge-admin">Admin</span></td>
+                                    <td><span class="badge badge-active">Active</span></td>
+                                    <td><button class="admin-action-btn"><i class="fa-solid fa-pen"></i></button></td>
+                                </tr>
+                                <tr>
+                                    <td style="display:flex; align-items:center; gap:10px;"><img src="https://i.pravatar.cc/150?img=12" width="30" style="border-radius:50%"> John Doe</td>
+                                    <td>john@example.com</td>
+                                    <td><span class="badge badge-user">User</span></td>
+                                    <td><span class="badge badge-active">Active</span></td>
+                                    <td><button class="admin-action-btn"><i class="fa-solid fa-ban"></i></button></td>
+                                </tr>
+                                <tr>
+                                    <td style="display:flex; align-items:center; gap:10px;"><img src="https://i.pravatar.cc/150?img=13" width="30" style="border-radius:50%"> Jane Smith</td>
+                                    <td>jane@example.com</td>
+                                    <td><span class="badge badge-user">User</span></td>
+                                    <td><span class="badge badge-banned">Banned</span></td>
+                                    <td><button class="admin-action-btn"><i class="fa-solid fa-trash"></i></button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </section>
+
+    <!-- Main Content (Hidden when searching) -->
+    <main id="main-content">
+        <!-- Hero Section -->
+        <header class="hero" id="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">Unlimited Anime,<br>Anytime</h1>
+                <p class="hero-description" id="hero-desc">Discover the best anime collections, stream your favorite series, and stay updated with the latest trending shows in the anime world.</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" id="hero-play"><i class="fa-solid fa-play"></i> Play Now</button>
+                    <button class="btn btn-secondary" id="hero-mylist"><i class="fa-solid fa-plus"></i> My List</button>
+                </div>
+            </div>
+            <div class="hero-fade-bottom"></div>
+        </header>
+
+        <!-- My List Section -->
+        <section class="row-section hidden" id="mylist-section">
+            <h2 class="section-title">My List</h2>
+            <div class="slider-container" id="mylist-slider"></div>
+        </section>
+
+        <!-- Recommended Section -->
+        <section class="row-section hidden" id="recommended-section">
+            <h2 class="section-title">Recommended For You</h2>
+            <div class="slider-container" id="recommended-slider"></div>
+        </section>
+
+        <!-- Custom Uploads Sections -->
+        <section class="row-section hidden" id="custom-anime-section">
+            <h2 class="section-title">Uploaded Anime / Series</h2>
+            <div class="slider-container" id="custom-anime-slider"></div>
+        </section>
+
+        <section class="row-section hidden" id="movies-section">
+            <h2 class="section-title">Latest Movies</h2>
+            <div class="slider-container" id="movies-slider"></div>
+        </section>
+
+        <section class="row-section hidden" id="indian-toon-section">
+            <h2 class="section-title">Indian Toon Cartoons</h2>
+            <div class="slider-container" id="indian-toon-slider"></div>
+        </section>
+
+        <section class="row-section hidden" id="old-cartoon-section">
+            <h2 class="section-title">Classic Old Cartoons</h2>
+            <div class="slider-container" id="old-cartoon-slider"></div>
+        </section>
+
+        <!-- Trending Section -->
+        <section class="row-section" id="trending">
+            <h2 class="section-title">Trending Now</h2>
+            <div class="slider-container" id="trending-slider">
+                <!-- Loading indicator -->
+                <div class="loader"></div>
+            </div>
+        </section>
+
+        <!-- Popular Section -->
+        <section class="row-section" id="popular">
+            <h2 class="section-title">Popular Anime</h2>
+            <div class="slider-container" id="popular-slider">
+                <div class="loader"></div>
+            </div>
+        </section>
+        
+        <!-- Top Upcoming Section -->
+        <section class="row-section" id="upcoming">
+            <h2 class="section-title">Top Upcoming</h2>
+            <div class="slider-container" id="upcoming-slider">
+                <div class="loader"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Request Content Modal -->
+    <div id="request-content-modal" class="modal">
+        <div class="modal-content" style="max-width: 500px; padding: 2rem; background: var(--bg-color);">
+            <span class="close-modal" id="close-request-modal">&times;</span>
+            <h2 style="margin-bottom: 1rem;">Request Content</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Can't find your favorite anime or movie? Let us know!</p>
+            <form id="request-form">
+                <div class="form-group">
+                    <label>Content Title</label>
+                    <input type="text" id="req-title" required placeholder="e.g., Attack on Titan Final Season" style="background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); width: 100%; padding: 1rem; border-radius: 8px; color: #fff;">
+                </div>
+                <div class="form-group" style="margin-top: 1rem; margin-bottom: 1.5rem;">
+                    <label>Content Type</label>
+                    <select id="req-type" required style="background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); width: 100%; padding: 1rem; border-radius: 8px; color: #fff;">
+                        <option value="Anime Series">Anime Series</option>
+                        <option value="Movie">Movie</option>
+                        <option value="Cartoon">Cartoon</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem; border-radius: 8px;">Submit Request</button>
+            </form>
+            <p id="req-success-msg" style="color: #28a745; text-align: center; margin-top: 1rem; display: none; font-weight: bold;">Request submitted successfully!</p>
+        </div>
+    </div>
+
+    <!-- Anime Details Modal -->
+    <div id="anime-details-modal" class="modal">
+        <div class="modal-content details-modal-content">
+            <span class="close-modal" id="close-details-modal">&times;</span>
+            <div class="details-hero">
+                <div class="details-hero-bg" id="details-hero-bg"></div>
+                <div class="details-hero-fade"></div>
+                <div class="details-hero-content">
+                    <h2 id="details-title" class="hero-title" style="font-size: 2.5rem;">Anime Title</h2>
+                    <div class="details-meta" style="display: flex; gap: 1rem; margin-bottom: 1rem; color: var(--accent-color); font-weight: 600;">
+                        <span id="details-year">2024</span>
+                        <span id="details-score">★ 8.5</span>
+                    </div>
+                    <p id="details-synopsis" class="hero-description" style="max-width: 800px; -webkit-line-clamp: 6;">Synopsis...</p>
+                    <div class="details-actions" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <button class="btn btn-primary" id="details-play-btn"><i class="fa-solid fa-play"></i> Play</button>
+                        <button class="btn btn-secondary" id="details-mylist-btn" style="margin-left: 0;"><i class="fa-solid fa-plus"></i> My List</button>
+                        <button class="btn btn-secondary" id="details-download-btn" style="margin-left: 0;"><i class="fa-solid fa-download"></i> Download</button>
+                    </div>
+                </div>
+            </div>
+            <div class="details-bottom">
+                <div class="details-episodes">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.5rem; border-bottom: 2px solid #333; padding-bottom: 0.5rem;"><i class="fa-solid fa-list"></i> Episodes & Playlist</h3>
+                    <div class="episodes-list" id="episodes-list">
+                        <!-- Episodes will be injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Player Modal -->
+    <div id="video-modal" class="modal">
+        <div class="modal-content" style="max-width: 1400px; width: 95%; background-color: var(--bg-color); height: 90vh; overflow-y: auto;">
+            <span class="close-modal" id="close-video-modal">&times;</span>
+            <div style="padding: 2rem;">
+                <h2 id="player-title" style="margin-bottom: 1rem; font-size: 1.5rem; font-weight: 700;">Loading...</h2>
+                <div class="player-layout" style="display: flex; gap: 2rem; flex-wrap: wrap;">
+                    
+                    <!-- Main Player Area -->
+                    <div style="flex: 1 1 70%;">
+                        <div class="video-container" id="video-container" style="margin-bottom: 1rem; background: #000; border-radius: 8px;"></div>
+                        
+                        <!-- Season Selector -->
+                        <div id="player-season-container" style="margin-top: 2rem; display: none;">
+                            <label style="font-weight: bold; color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem;">CHOOSE SEASON</label><br>
+                            <select id="player-season-selector" style="background: transparent; color: var(--text-color); border: none; font-size: 1.5rem; font-weight: bold; cursor: pointer; outline: none; margin-top: 0.5rem;">
+                                <!-- Options populated by JS -->
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Sidebar (Options/Servers) -->
+                    <div style="flex: 1 1 25%; background: var(--second-bg); padding: 1.5rem; border-radius: 8px; height: fit-content;">
+                        <h3 style="font-size: 0.9rem; margin-bottom: 1.5rem; color: var(--text-muted); text-transform: uppercase;">Options</h3>
+                        <h4 style="font-size: 0.9rem; margin-bottom: 0.8rem;">Select Server</h4>
+                        <button class="btn btn-secondary" style="width: 100%; text-align: left; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+                            <span><i class="fa-solid fa-server" style="color: var(--accent-color);"></i> SERVER 1</span>
+                            <small style="color: var(--text-muted);">HD</small>
+                        </button>
+                        <button class="btn btn-secondary" style="width: 100%; text-align: left; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; opacity: 0.6;">
+                            <span><i class="fa-solid fa-server"></i> SERVER 2</span>
+                            <small style="color: var(--text-muted);">SD</small>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Episodes Grid -->
+                <div id="player-episodes-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1rem; margin-top: 2rem;">
+                    <!-- Episode cards populated by JS -->
+                </div>
+                
+                <!-- Recommendations -->
+                <h2 class="section-title" style="margin-top: 4rem;">Recommended Series</h2>
+                <div class="slider-container" id="player-recommended-slider"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
