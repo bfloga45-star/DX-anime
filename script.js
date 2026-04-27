@@ -572,13 +572,21 @@ genreFilter.addEventListener('change', (e) => {
     const results = contentLibrary.filter(item => 
         item.genres && item.genres.some(g => g.toLowerCase() === genre.toLowerCase())
     );
+
+    const countEl = document.getElementById('search-results-count');
     
     if (results.length > 0) {
+        countEl.textContent = `${results.length} title${results.length > 1 ? 's' : ''} found`;
         results.forEach(item => {
             searchResults.appendChild(createAnimeCard(item));
         });
     } else {
-        searchResults.innerHTML = '<p>No content found for this genre.</p>';
+        countEl.textContent = '';
+        searchResults.innerHTML = `
+            <div style="grid-column: 1/-1; text-align:center; padding:4rem 1rem; color:var(--text-muted);">
+                <i class="fa-solid fa-ghost" style="font-size:3rem; margin-bottom:1rem; opacity:0.2;"></i>
+                <p style="font-size:1.1rem;">No ${genre} anime found in the library.</p>
+            </div>`;
     }
 });
 
@@ -602,22 +610,53 @@ searchInput.addEventListener('input', (e) => {
 async function performSearch(query) {
     mainContent.classList.add('hidden');
     searchSection.classList.remove('hidden');
-    document.querySelector('#search-section .section-title').textContent = 'Search Results';
+    document.querySelector('#search-section .section-title').textContent = `Results for "${query}"`;
+    document.getElementById('search-results-count').textContent = 'Searching...';
     searchResults.innerHTML = '<div class="loader"></div>';
     
     const results = await fetchAPI(`/anime?q=${encodeURIComponent(query)}&limit=20`);
     searchResults.innerHTML = '';
     
+    const countEl = document.getElementById('search-results-count');
+
     if (results && results.length > 0) {
+        countEl.textContent = `${results.length} result${results.length > 1 ? 's' : ''} found`;
         results.forEach(anime => {
             const mappedItem = mapJikanToContent(anime, 'search', 0);
             const card = createAnimeCard(mappedItem);
             searchResults.appendChild(card);
         });
     } else {
-        searchResults.innerHTML = '<p>No results found.</p>';
+        countEl.textContent = '';
+        searchResults.innerHTML = `
+            <div style="grid-column: 1/-1; text-align:center; padding:4rem 1rem; color:var(--text-muted);">
+                <i class="fa-solid fa-magnifying-glass" style="font-size:3rem; margin-bottom:1rem; opacity:0.2;"></i>
+                <p style="font-size:1.1rem;">No results found for "${query}".</p>
+            </div>`;
     }
 }
+
+// Back Button for Search/Genre Section
+document.getElementById('search-back-btn').addEventListener('click', () => {
+    searchSection.classList.add('hidden');
+    mainContent.classList.remove('hidden');
+    genreFilter.value = 'all';
+    searchInput.value = '';
+    window.scrollTo(0, 0);
+});
+
+// Footer Genre Links
+document.getElementById('footer-genre-links').addEventListener('click', (e) => {
+    const link = e.target.closest('a[data-genre]');
+    if (!link) return;
+    e.preventDefault();
+    const genre = link.dataset.genre;
+
+    // Sync the navbar dropdown
+    genreFilter.value = genre;
+    genreFilter.dispatchEvent(new Event('change'));
+    window.scrollTo(0, 0);
+});
 
 // Navigation Events
 document.querySelector('.logo').addEventListener('click', () => location.reload());

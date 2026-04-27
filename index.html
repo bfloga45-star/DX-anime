@@ -59,9 +59,17 @@
         <a href="#movies-section" class="nav-item"><i class="fa-solid fa-video"></i><span>Movies</span></a>
     </nav>
 
-    <!-- Search Results Section (Hidden by default) -->
+    <!-- Search / Genre Results Section (Hidden by default) -->
     <section id="search-section" class="hidden">
-        <h2 class="section-title">Search Results</h2>
+        <div class="search-results-header">
+            <button class="search-back-btn" id="search-back-btn" title="Back to Home">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div>
+                <h2 class="section-title" style="margin-bottom: 0;">Search Results</h2>
+                <p class="search-results-count" id="search-results-count"></p>
+            </div>
+        </div>
         <div id="search-results" class="grid-container"></div>
     </section>
 
@@ -374,6 +382,82 @@
             </div>
         </section>
     </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-top">
+            <div class="footer-grid">
+                <!-- Brand Column -->
+                <div class="footer-col footer-brand">
+                    <h2 class="footer-logo">DX<span class="highlight">Anime</span></h2>
+                    <p class="footer-desc">Your premium destination for unlimited anime, movies, and cartoons. Stream thousands of titles in HD — completely free, no ads, no sign-up required.</p>
+                    <div class="footer-social">
+                        <a href="#" title="GitHub"><i class="fa-brands fa-github"></i></a>
+                        <a href="#" title="Discord"><i class="fa-brands fa-discord"></i></a>
+                        <a href="#" title="Twitter / X"><i class="fa-brands fa-x-twitter"></i></a>
+                        <a href="#" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="footer-col">
+                    <h4 class="footer-heading">Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#trending">Trending</a></li>
+                        <li><a href="#popular">Popular Anime</a></li>
+                        <li><a href="#upcoming">Top Upcoming</a></li>
+                        <li><a href="#mylist-section">My List</a></li>
+                    </ul>
+                </div>
+
+                <!-- Genres -->
+                <div class="footer-col">
+                    <h4 class="footer-heading">Top Genres</h4>
+                    <ul class="footer-links" id="footer-genre-links">
+                        <li><a href="#" data-genre="Action">Action</a></li>
+                        <li><a href="#" data-genre="Fantasy">Fantasy</a></li>
+                        <li><a href="#" data-genre="Romance">Romance</a></li>
+                        <li><a href="#" data-genre="Comedy">Comedy</a></li>
+                        <li><a href="#" data-genre="Sci-Fi">Sci-Fi</a></li>
+                        <li><a href="#" data-genre="Horror">Horror</a></li>
+                    </ul>
+                </div>
+
+                <!-- Legal & Info -->
+                <div class="footer-col">
+                    <h4 class="footer-heading">Support & Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">DMCA Notice</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="footer-bottom-inner">
+                <p class="footer-copyright">&copy; 2024 – 2026 DX<span class="highlight">Anime</span>. All rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <span>Made with <i class="fa-solid fa-heart" style="color: var(--accent-color);"></i> for anime fans</span>
+                    <span class="footer-separator">|</span>
+                    <a href="#">Privacy</a>
+                    <span class="footer-separator">|</span>
+                    <a href="#">Terms</a>
+                    <span class="footer-separator">|</span>
+                    <a href="#">Sitemap</a>
+                </div>
+            </div>
+        </div>
+
+        <p class="footer-disclaimer">
+            <strong>Disclaimer:</strong> DX Anime does not store any files on its server. All contents are provided by non-affiliated third parties. This site is for educational and demonstration purposes only.
+        </p>
+    </footer>
 
     <!-- Anime Details Modal -->
     <div id="anime-details-modal" class="modal">
