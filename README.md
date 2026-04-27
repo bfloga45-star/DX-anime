@@ -1,51 +1,77 @@
-# 🎬 DX-Anime Streaming Platform
+# 🎬 DX-Anime — Premium Anime Streaming Platform
 
-![DX-Anime Banner](https://via.placeholder.com/1200x400?text=DX-Anime+Streaming+Platform)
-
-A modern, premium, Netflix-inspired anime streaming web application built entirely with **Vanilla HTML, CSS, and JavaScript**. DX-Anime leverages the **Jikan API (MyAnimeList)** to fetch real-time trending, popular, and upcoming anime, while also featuring a fully functional, hidden administrative dashboard that allows platform owners to upload and manage custom content (Movies, Series, Cartoons) directly into `localStorage` without the need for a backend database.
+A modern, Netflix-inspired anime streaming web application built entirely with **Vanilla HTML, CSS, and JavaScript**. DX-Anime leverages the **Jikan API (MyAnimeList)** for real-time anime data and features a powerful hidden admin dashboard for managing a custom content library — all without a backend server.
 
 ---
 
 ## ✨ Key Features
 
 ### 📺 Immersive User Experience
-- **Netflix-Style UI:** Beautiful dark theme, horizontal sliders, auto-playing hero section, and smooth glassmorphism effects.
-- **Light & Dark Mode:** Toggle between sleek dark styling and clean light modes with the click of a button.
-- **My List Capability:** Users can add their favorite anime to a personal watchlist that persists via `localStorage`.
-- **Advanced Player Dashboard:** A customized video player featuring dynamic episode grids, season selectors, and smart recommendations.
+
+- **Netflix-Style UI** — Dark theme, horizontal sliders, auto-playing hero section, and glassmorphism effects.
+- **Light & Dark Mode** — Toggle themes instantly with the moon/sun icon in the navbar.
+- **My List** — Save favorite anime to a personal watchlist that persists via `localStorage`.
+- **Genre Filtering** — Browse content by genre (Action, Romance, Sci-Fi, etc.) from the navbar dropdown.
+- **Voice & Text Search** — Find anime instantly with the search bar or the built-in voice search.
+- **Responsive Design** — Fully optimized for desktop, tablet, and mobile with a bottom navigation bar on small screens.
+
+### 🎥 Advanced Video Player
+
+- **Multi-Season & Episode Grid** — Series are displayed with a season selector dropdown and a responsive episode card grid.
+- **Server Selection Sidebar** — Choose between HD/SD server options inside the player.
+- **Smart Recommendations** — Dynamic "Recommended Series" slider below the active video player.
+- **Direct Video & YouTube Support** — Play `.mp4` files directly or embed YouTube trailers.
 
 ### 🛡️ Secret Admin Dashboard
-- **Hidden Access:** Accessible only via the profile icon or a secret keyboard shortcut (`Ctrl + Shift + A`).
-- **Real-Time Analytics:** Circular progress rings showing data on active users, total content, and genre distributions.
-- **Multi-Episode / Series Management:** Admins can effortlessly batch-upload seasons and episodes by simply pasting URLs under `[Season Name]` tags.
-- **Library Management:** Edit, move (reorder), or delete content across various categories (Movies, Indian Toons, Old Cartoons).
+
+- **Hidden Access** — Only accessible via a secret keyboard shortcut (`Ctrl + Shift + A`), keeping it invisible to regular users.
+- **Overview Analytics** — Circular progress ring graphs showing Total Content, Anime Series, Movies, and Active Users at a glance.
+- **Add/Edit Content** — Glassmorphism-styled form with support for:
+  - Single Direct Video / Movie uploads
+  - Multi-Episode Anime Series (batch-paste URLs under `[Season Name]` tags)
+  - YouTube Trailer IDs
+- **Manage Library** — Edit, reorder, or delete content across all categories (Custom Anime, Movies, Indian Toons, Old Cartoons).
+- **User Management** — View and manage registered users with role badges and status indicators.
+
+### 📩 Request Anime / Movie
+
+- **Floating Action Button** — A glowing, animated FAB on the main site lets any user request content.
+- **Request Form** — Users submit their name, desired anime/movie title, content type, and an optional message.
+- **Admin Requests Panel** — A dedicated "Requests" tab in the admin dashboard featuring:
+  - **Pending / Approved / All** filter tabs
+  - Live stats pills showing pending and completed request counts
+  - Premium request cards with colored status stripes, type icons, time-ago timestamps, and Approve / Dismiss actions
+  - Notification badge on the sidebar showing the number of pending requests
 
 ### ⚡ Powered by Jikan API
-- Seamless integration with the v4 Jikan API for dynamic Anime metadata (Titles, Posters, Synopsis, Scores, YouTube Trailer IDs).
+
+- Seamless integration with the **Jikan v4 API** for dynamic anime metadata — Titles, Posters, Synopsis, Scores, Genres, and YouTube Trailer IDs.
 
 ---
 
 ## 🛠️ Technology Stack
 
-- **HTML5:** Semantic architecture.
-- **CSS3:** Flexbox, CSS Grid, Custom Variables (Tokens), and modern animations (Hover states, UI scaling, Glassmorphism).
-- **Vanilla JavaScript:** ES6+, Fetch API, LocalStorage persistence, DOM manipulation.
-- **No Backend Required:** Content management operates entirely client-side, making deployment incredibly lightweight!
+| Layer         | Technology                                                                                   |
+| ------------- | -------------------------------------------------------------------------------------------- |
+| **Structure** | HTML5 (Semantic elements)                                                                    |
+| **Styling**   | CSS3 — Flexbox, Grid, Custom Properties, Glassmorphism, Conic Gradients, Keyframe Animations |
+| **Logic**     | Vanilla JavaScript (ES6+) — Fetch API, LocalStorage, DOM Manipulation                        |
+| **Data**      | Jikan API v4 (MyAnimeList) + LocalStorage for custom content                                 |
+| **Backend**   | None required — 100% client-side                                                             |
 
 ---
 
 ## 🚀 How to Run Locally
 
-Because the app is built with pure Vanilla technologies, no build steps (`npm`, `webpack`, etc.) are required. 
+No build steps, no `npm install`, no `webpack` — just open and go.
 
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/your-username/dx-anime.git
    cd dx-anime
    ```
-2. **Launch the project:**
-   Simply open the `index.html` file in your preferred web browser. Alternatively, use an extension like **Live Server** in VS Code for a better development experience.
-
+2. **Open in browser:**
+   Simply open `index.html` in your browser, or use **Live Server** in VS Code for hot-reloading.
 
 ---
 
@@ -53,30 +79,38 @@ Because the app is built with pure Vanilla technologies, no build steps (`npm`, 
 
 ```text
 📦 dx-anime
- ┣ 📜 index.html    # The main layout, modals, and admin dashboard structure
- ┣ 📜 styles.css    # Responsive styling, animations, light/dark themes
- ┣ 📜 script.js     # API fetching, player logic, admin management, and DOM handling
+ ┣ 📜 index.html    # Layout, modals, admin dashboard, request system
+ ┣ 📜 styles.css    # Responsive styling, animations, themes, glassmorphism
+ ┣ 📜 script.js     # API calls, player logic, admin CRUD, request handling
  ┗ 📜 README.md     # Project documentation
 ```
 
 ---
 
-## 🎨 Screenshots & UI Design
+## 📱 Responsive Breakpoints
 
-### The Main Application
-*A premium Netflix-style layout showcasing Top Upcoming, Trending, and Custom content.*
+| Breakpoint      | Behavior                                                      |
+| --------------- | ------------------------------------------------------------- |
+| `> 900px`       | Full sidebar admin layout, desktop nav                        |
+| `768px – 900px` | Admin sidebar collapses to horizontal tabs                    |
+| `< 768px`       | Bottom navigation bar, compact cards, mobile-optimized modals |
 
-### The Player Modal
-*A full-screen dashboard featuring an integrated episode grid, season selector, and dynamic recommendations below the active player.*
+---
 
-### The Admin Dashboard
-*Glassmorphism UI elements, circular analytics graphs, and powerful content upload tools hidden from regular users.*
+## 🎨 Design Highlights
+
+- **Circular Progress Graphs** — Admin analytics rendered with CSS `conic-gradient` rings
+- **Glassmorphism Forms** — Frosted-glass admin forms with `backdrop-filter: blur`
+- **Animated FAB** — Floating request button with a smooth bobbing animation
+- **Status-Colored Request Cards** — Yellow stripe for pending, green for approved
+- **Hover Micro-Animations** — Card scaling, shadow lifts, and color transitions throughout
+- **Custom Scrollbars** — Styled scrollbars matching the platform theme
 
 ---
 
 ## 🤝 Contributing
 
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/your-username/dx-anime/issues). 
+Contributions, issues, and feature requests are welcome!
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)

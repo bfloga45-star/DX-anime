@@ -962,5 +962,236 @@ function formatCategoryName(cat) {
     return map[cat] || cat;
 }
 
+// ==========================================
+// REQUEST ANIME / MOVIE FEATURE
+// ==========================================
+
+let userRequests = JSON.parse(localStorage.getItem('dx_anime_requests')) || [];
+
+function saveRequests() {
+    localStorage.setItem('dx_anime_requests', JSON.stringify(userRequests));
+}
+
+// --- Floating Action Button ---
+const requestFab = document.getElementById('request-anime-fab');
+const requestModal = document.getElementById('request-modal');
+const closeRequestModal = document.getElementById('close-request-modal');
+const requestForm = document.getElementById('request-form');
+
+requestFab.addEventListener('click', () => {
+    requestModal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+});
+
+closeRequestModal.addEventListener('click', () => {
+    requestModal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+});
+
+window.addEventListener('click', (e) => {
+    if (e.target === requestModal) {
+        requestModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+});
+
+// --- Submit Request ---
+requestForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const newRequest = {
+        id: 'req_' + Date.now() + Math.random().toString(36).substr(2, 5),
+        name: document.getElementById('request-name').value.trim(),
+        title: document.getElementById('request-title').value.trim(),
+        type: document.getElementById('request-type').value,
+        message: document.getElementById('request-message').value.trim(),
+        date: new Date().toISOString(),
+        status: 'pending'
+    };
+
+    userRequests.push(newRequest);
+    saveRequests();
+    requestForm.reset();
+    requestModal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+
+    // Visual confirmation
+    const toast = document.createElement('div');
+    toast.style.cssText = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#28a745,#20c997);color:#fff;padding:1rem 2rem;border-radius:10px;font-weight:600;z-index:9999;box-shadow:0 8px 25px rgba(0,0,0,0.3);animation:fadeIn 0.3s ease;';
+    toast.textContent = '✅ Request submitted! The admin will review it.';
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3500);
+
+    updateRequestBadge();
+    updateDecoStats();
+});
+
+// --- Admin: Filter Tabs ---
+let currentReqFilter = 'pending';
+
+document.querySelectorAll('.req-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.req-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentReqFilter = tab.dataset.filter;
+        renderAdminRequests();
+    });
+});
+
+function updateDecoStats() {
+    const totalEl = document.getElementById('req-deco-total');
+    const fulfilledEl = document.getElementById('req-deco-fulfilled');
+    if (totalEl) totalEl.textContent = userRequests.length;
+    if (fulfilledEl) fulfilledEl.textContent = userRequests.filter(r => r.status === 'approved').length;
+}
+
+// --- Admin: Render Requests ---
+function renderAdminRequests() {
+    const container = document.getElementById('admin-requests-list');
+    if (!container) return;
+    container.innerHTML = '';
+
+    // Update stats pills
+    const pendingCount = userRequests.filter(r => r.status === 'pending').length;
+    const doneCount = userRequests.filter(r => r.status === 'approved').length;
+    const pendingStat = document.getElementById('req-stat-pending');
+    const doneStat = document.getElementById('req-stat-done');
+    if (pendingStat) pendingStat.textContent = pendingCount;
+    if (doneStat) doneStat.textContent = doneCount;
+
+    let filtered = userRequests;
+    if (currentReqFilter === 'pending') {
+        filtered = userRequests.filter(r => r.status === 'pending');
+    } else if (currentReqFilter === 'approved') {
+        filtered = userRequests.filter(r => r.status === 'approved');
+    }
+
+    if (filtered.length === 0) {
+        const emptyIcon = currentReqFilter === 'approved' ? 'fa-circle-check' : 'fa-inbox';
+        const emptyMsg = currentReqFilter === 'approved'
+            ? 'No approved requests yet.'
+            : 'No pending requests. All caught up! 🎉';
+        container.innerHTML = `
+            <div style="text-align:center; padding:4rem 2rem; color: var(--text-muted);">
+                <i class="fa-solid ${emptyIcon}" style="font-size: 3.5rem; margin-bottom: 1rem; opacity: 0.2;"></i>
+                <p style="font-size: 1.1rem; max-width: 300px; margin: 0 auto;">${emptyMsg}</p>
+            </div>
+        `;
+        return;
+    }
+
+    // Sort by newest first
+    filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    filtered.forEach(req => {
+        const date = new Date(req.date);
+        const timeAgo = getTimeAgo(date);
+        const typeIcon = req.type === 'Movie' ? 'fa-film' : req.type === 'Indian Toon' ? 'fa-child' : req.type === 'Old Cartoon' ? 'fa-tv' : 'fa-dragon';
+        const isPending = req.status === 'pending';
+        const statusClass = isPending ? 'pending' : 'approved';
+
+        const card = document.createElement('div');
+        card.className = 'request-card';
+        card.innerHTML = `
+            <div class="request-card-stripe ${statusClass}"></div>
+            <div class="request-card-icon ${statusClass}">
+                <i class="fa-solid ${typeIcon}"></i>
+            </div>
+            <div class="request-card-body">
+                <div class="request-card-header">
+                    <h4 class="request-card-title">${req.title}</h4>
+                    <span class="request-card-status ${statusClass}">${isPending ? 'Pending' : 'Done'}</span>
+                </div>
+                <div class="request-card-meta">
+                    <span><i class="fa-solid fa-user"></i> ${req.name}</span>
+                    <span><i class="fa-solid fa-tag"></i> ${req.type}</span>
+                    <span><i class="fa-solid fa-clock"></i> ${timeAgo}</span>
+                </div>
+                ${req.message ? `<div class="request-card-message">"${req.message}"</div>` : ''}
+            </div>
+            ${isPending ? `
+            <div class="request-card-actions">
+                <button class="admin-action-btn" onclick="approveRequest('${req.id}')" title="Mark as Done" style="background:#28a745;">
+                    <i class="fa-solid fa-check"></i>
+                </button>
+                <button class="admin-action-btn delete-btn" onclick="dismissRequest('${req.id}')" title="Dismiss">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            ` : `
+            <div class="request-card-actions">
+                <button class="admin-action-btn delete-btn" onclick="dismissRequest('${req.id}')" title="Remove">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </div>
+            `}
+        `;
+        container.appendChild(card);
+    });
+}
+
+function getTimeAgo(date) {
+    const seconds = Math.floor((new Date() - date) / 1000);
+    if (seconds < 60) return 'Just now';
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    return `${days}d ago`;
+}
+
+window.approveRequest = function(id) {
+    const req = userRequests.find(r => r.id === id);
+    if (req) {
+        req.status = 'approved';
+        saveRequests();
+        renderAdminRequests();
+        updateRequestBadge();
+    }
+};
+
+window.dismissRequest = function(id) {
+    if (confirm('Dismiss this request?')) {
+        userRequests = userRequests.filter(r => r.id !== id);
+        saveRequests();
+        renderAdminRequests();
+        updateRequestBadge();
+    }
+};
+
+function updateRequestBadge() {
+    const badge = document.getElementById('request-count-badge');
+    if (!badge) return;
+    const pending = userRequests.filter(r => r.status === 'pending').length;
+    if (pending > 0) {
+        badge.textContent = pending;
+        badge.style.display = 'inline-block';
+    } else {
+        badge.style.display = 'none';
+    }
+}
+
+// Hook into admin view switching to render requests when tab is opened
+const originalAdminNavHandler = true; // marker
+document.querySelectorAll('.admin-nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+        const target = item.dataset.target;
+        if (target === 'admin-requests') {
+            renderAdminRequests();
+        }
+    });
+});
+
+// Update badge on initial admin load
+const originalRenderAdminList = renderAdminList;
+const patchedRenderAdminList = function() {
+    originalRenderAdminList();
+    updateRequestBadge();
+};
+
 // Start application
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', () => {
+    init();
+    updateRequestBadge();
+});
