@@ -24,7 +24,6 @@ A modern, Netflix-inspired anime streaming web application built entirely with *
 
 ### 🛡️ Secret Admin Dashboard
 
-- **Hidden Access** — Only accessible via a secret keyboard shortcut (`Ctrl + Shift + A`), keeping it invisible to regular users.
 - **Overview Analytics** — Circular progress ring graphs showing Total Content, Anime Series, Movies, and Active Users at a glance.
 - **Add/Edit Content** — Glassmorphism-styled form with support for:
   - Single Direct Video / Movie uploads
